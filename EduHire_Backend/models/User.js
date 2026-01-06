@@ -36,6 +36,8 @@ const UserSchema = new mongoose.Schema({
                 institution: String,
                 degree: String,
                 field: String,
+                location: String,
+                gpa: String,
                 startDate: String,
                 endDate: String,
                 description: String
@@ -70,6 +72,16 @@ const UserSchema = new mongoose.Schema({
                 githubLink: String
             }
         ],
+        internships: [
+            {
+                company: String,
+                role: String,
+                startDate: String,
+                endDate: String,
+                description: String
+            }
+        ],
+        achievements: [String],
         certifications: [
             {
                 name: String,

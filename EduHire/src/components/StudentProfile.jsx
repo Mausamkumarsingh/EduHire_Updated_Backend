@@ -131,9 +131,10 @@ const StudentProfile = ({ onSectionChange }) => {
       email: '',
       phone: '',
       location: '',
-      linkedin: '',
-      github: '',
-      portfolio: '',
+      location: '',
+      linkedinUrl: '',
+      githubUrl: '',
+      portfolioUrl: '',
       avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
     },
     education: [],
@@ -159,6 +160,10 @@ const StudentProfile = ({ onSectionChange }) => {
 
         setUserData({
           ...currentUser.profile,
+          personal: {
+            ...currentUser.profile.personal,
+            email: currentUser.email || currentUser.profile?.personal?.email
+          },
           experience: jobs,
           internships: internships
         });
@@ -503,25 +508,25 @@ const StudentProfile = ({ onSectionChange }) => {
                   <InfoRow
                     icon={ExternalLink}
                     label="LinkedIn"
-                    value={userData.personal.linkedin}
+                    value={userData.personal.linkedinUrl}
                     isEditing={isEditing}
-                    onChange={(val) => handleInputChange('personal', 'linkedin', val)}
+                    onChange={(val) => handleInputChange('personal', 'linkedinUrl', val)}
                     isLink
                   />
                   <InfoRow
                     icon={Code}
                     label="GitHub"
-                    value={userData.personal.github}
+                    value={userData.personal.githubUrl}
                     isEditing={isEditing}
-                    onChange={(val) => handleInputChange('personal', 'github', val)}
+                    onChange={(val) => handleInputChange('personal', 'githubUrl', val)}
                     isLink
                   />
                   <InfoRow
                     icon={Globe}
                     label="Portfolio"
-                    value={userData.personal.portfolio}
+                    value={userData.personal.portfolioUrl}
                     isEditing={isEditing}
-                    onChange={(val) => handleInputChange('personal', 'portfolio', val)}
+                    onChange={(val) => handleInputChange('personal', 'portfolioUrl', val)}
                     isLink
                   />
                 </div>
@@ -597,6 +602,7 @@ const StudentProfile = ({ onSectionChange }) => {
                       degree: '',
                       institution: '',
                       location: '',
+                      gpa: '',
                       startDate: '',
                       endDate: '',
                       description: ''
@@ -642,6 +648,13 @@ const StudentProfile = ({ onSectionChange }) => {
                               onChange={(e) => handleArrayChange('education', index, 'location', e.target.value)}
                               className="input-field-sm"
                             />
+                            <input
+                              type="text"
+                              placeholder="GPA"
+                              value={edu.gpa}
+                              onChange={(e) => handleArrayChange('education', index, 'gpa', e.target.value)}
+                              className="input-field-sm"
+                            />
                             <div className="flex space-x-2">
                               <input
                                 type="month"
@@ -664,6 +677,12 @@ const StudentProfile = ({ onSectionChange }) => {
                           <p className="text-gray-700 font-medium">{edu.degree}</p>
                           <p className="text-sm text-gray-500 mt-1 flex items-center space-x-2">
                             <span>{formatDate(edu.startDate)} - {formatDate(edu.endDate)}</span>
+                            {edu.gpa && (
+                              <>
+                                <span>•</span>
+                                <span className="text-gray-600">GPA: {edu.gpa}</span>
+                              </>
+                            )}
                             {edu.location && (
                               <>
                                 <span>•</span>
@@ -819,7 +838,7 @@ const StudentProfile = ({ onSectionChange }) => {
                           </div>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <input type="text" placeholder="Project Title" value={project.title} onChange={(e) => handleArrayChange('projects', index, 'title', e.target.value)} className="input-field-sm col-span-2" />
-                            <input type="text" placeholder="Tech Stack (comma separated)" value={Array.isArray(project.techStack) ? project.techStack.join(', ') : project.techStack} onChange={(e) => handleArrayChange('projects', index, 'techStack', e.target.value.split(','))} className="input-field-sm col-span-2" />
+                            <input type="text" placeholder="Tech Stack (comma separated)" value={Array.isArray(project.techStack) ? project.techStack.join(', ') : (project.techStack || '')} onChange={(e) => handleArrayChange('projects', index, 'techStack', e.target.value.split(',').map(t => t.trim()))} className="input-field-sm col-span-2" />
                             <input type="url" placeholder="Live Link" value={project.link} onChange={(e) => handleArrayChange('projects', index, 'link', e.target.value)} className="input-field-sm" />
                             <input type="url" placeholder="Github" value={project.githubLink} onChange={(e) => handleArrayChange('projects', index, 'githubLink', e.target.value)} className="input-field-sm" />
                             <textarea placeholder="Description" value={project.description} onChange={(e) => handleArrayChange('projects', index, 'description', e.target.value)} className="input-field-sm col-span-2 h-20 resize-none" />
@@ -844,7 +863,7 @@ const StudentProfile = ({ onSectionChange }) => {
                           </div>
                           <p className="text-gray-600 text-sm mb-4 line-clamp-2">{project.description}</p>
                           <div className="flex flex-wrap gap-2">
-                            {(Array.isArray(project.techStack) ? project.techStack : (project.techStack || '').split(',')).map((tech, i) => (
+                            {(Array.isArray(project.techStack) ? project.techStack : (typeof project.techStack === 'string' ? project.techStack.split(',') : [])).map((tech, i) => (
                               <span key={i} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md font-medium border border-gray-200">
                                 {typeof tech === 'string' ? tech.trim() : tech}
                               </span>
